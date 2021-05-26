@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="bootstrap-4.6.0/css/bootstrap.css">
+        <title>Nivell 3</title>
+        <style>
+            body {
+                font-size:xx-large;
+            }
+            .container {
+                margin-top: 5vh;
+                padding: 30px;
+                background-color: lightgrey;
+                border: 1px solid black;
+                border-radius: 2%;
+            }
+            #pantalla {
+                border: 1px solid black;
+                height: 2em;
+                background-color: white;
+                text-align: right;
+                padding-right: 10px;
+            }
+            .btn {
+                height: 100px;
+                font-size:xx-large;
+            }
+            .grid-container {
+                height: 100%;
+                display: grid;
+                grid-gap: 1.25%;
+                grid-template-columns: 19% 19% 19% 19% 19%;
+                grid-template-rows: 23% 23% 23% 23%;
+                grid-row-gap: 4%;
+                margin-bottom: 30px;
+            }
+        </style>
+    </head>
+    <body style="background-color:powderblue;">      
+        <div class="container">
+            <h1>CALCULADORA</h1>
+            <p id="pantalla">0</p>
+            <div class="grid-container">
+                <input type="button" onclick='num7()' Value=' 7 ' id="11" class="btn btn-secondary">
+                <input type="button" onclick='num8()' Value=' 8 ' id="12" class="btn btn-secondary">
+                <input type="button" onclick='num9()' Value=' 9 ' id="13" class="btn btn-secondary">         
+                <input type="button" onclick='desf()' Value='CE' id="14" class="btn btn-warning">
+                <input type="button" onclick='inici()' Value=' C ' id="15" class="btn btn-primary">
+                <input type="button" onclick='num4()' Value='4' id="21" class="btn btn-secondary">
+                <input type="button" onclick='num5()' Value='5' id="22" class="btn btn-secondary">
+                <input type="button" onclick='num6()' Value='6' id="23" class="btn btn-secondary">
+                <input type="button" onclick='mult()' Value='x' id="24" class="btn btn-danger">
+                <input type="button" onclick='divi()' Value='÷' id="25" class="btn btn-danger">
+                <input type="button" onclick='num1()' Value='1' id="31" class="btn btn-secondary">
+                <input type="button" onclick='num2()' Value='2' id="32" class="btn btn-secondary">
+                <input type="button" onclick='num3()' Value='3' id="33" class="btn btn-secondary">
+                <input type="button" onclick='suma()' Value='+' id="34" class="btn btn-danger">
+                <input type="button" onclick='rest()' Value='-' id="35" class="btn btn-danger">
+                <input type="button" onclick='num0()' Value='0' id="41" class="btn btn-secondary">
+                <input type="button" onclick='coma()' Value='·' id="42" class="btn btn-secondary">
+                <input type="button" onclick='nega()' Value='+/-' id="43" class="btn btn-secondary">
+                <input type="button" onclick='mod()' Value='%' id="44" class="btn btn-danger">
+                <input type="button" onclick='igual()' Value='=' id="45" class="btn btn-success">
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    //variles
+    var subtotal = "";
+    var primerNum = "";
+    var segonNum = "";
+    var operador;
+
+    // Números
+    function num0() {subtotal = subtotal + 0; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num1() {subtotal = subtotal + 1; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num2() {subtotal = subtotal + 2; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num3() {subtotal = subtotal + 3; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num4() {subtotal = subtotal + 4; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num5() {subtotal = subtotal + 5; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num6() {subtotal = subtotal + 6; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num7() {subtotal = subtotal + 7; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num8() {subtotal = subtotal + 8; document.getElementById("pantalla").innerHTML = subtotal;}
+    function num9() {subtotal = subtotal + 9; document.getElementById("pantalla").innerHTML = subtotal;}
+
+    //Operadors
+    function suma() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "+"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+    function rest() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "-"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+    function mult() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "*"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+    function divi() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "/"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+    function mod() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "%"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+
+    //Especials
+    function coma() {if (subtotal.indexOf(".") == -1) {subtotal = subtotal + "."}; document.getElementById("pantalla").innerHTML = subtotal;}
+    function inici() {subtotal = ""; primerNum=""; segonNum=""; document.getElementById("pantalla").innerHTML = "0";}
+    function desf() {subtotal = subtotal.substring(0,subtotal.length-1); document.getElementById("pantalla").innerHTML = subtotal;}
+    function nega() {if (subtotal.charAt(0) == "-") {subtotal = subtotal.substring(1,subtotal.lenght)} else {subtotal = "-"+subtotal}; document.getElementById("pantalla").innerHTML = subtotal;}
+
+    //Càlculs
+    function igual() {
+        let resultat;
+        if (primerNum !== "" && subtotal !== "") { 
+            segonNum = parseFloat(subtotal);
+            switch(operador){
+                case "+":
+                    resultat = primerNum+segonNum;
+                    break;
+                case "-":
+                    resultat = primerNum-segonNum;
+                    break;
+                case "*":
+                    resultat = primerNum*segonNum;
+                    break;
+                case "/":
+                    if (segonNum == 0) {resultat = "Math.error(divBy0)";}
+                    else {resultat = primerNum/segonNum;}
+                    break;
+                case "%":
+                    resultat = primerNum%segonNum;
+                    break;
+                default:
+                    resultat="Math.error(UnknownOp"+operador+")";
+            }
+            document.getElementById("pantalla").innerHTML = resultat;
+            console.log(primerNum+operador+segonNum+"="+resultat);
+            primerNum=""; segonNum=""; subtotal=""+resultat;
+        }
+    }
+</script>
