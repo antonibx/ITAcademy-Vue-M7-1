@@ -1,61 +1,127 @@
-// Variables
-var subtotal = "";
+//Variables globals
 var primerNum = "";
 var segonNum = "";
-var operador;
+var operador = "";
 
-// Números
-function num0() {subtotal = subtotal + 0; document.getElementById("pantalla").innerHTML = subtotal;}
-function num1() {subtotal = subtotal + 1; document.getElementById("pantalla").innerHTML = subtotal;}
-function num2() {subtotal = subtotal + 2; document.getElementById("pantalla").innerHTML = subtotal;}
-function num3() {subtotal = subtotal + 3; document.getElementById("pantalla").innerHTML = subtotal;}
-function num4() {subtotal = subtotal + 4; document.getElementById("pantalla").innerHTML = subtotal;}
-function num5() {subtotal = subtotal + 5; document.getElementById("pantalla").innerHTML = subtotal;}
-function num6() {subtotal = subtotal + 6; document.getElementById("pantalla").innerHTML = subtotal;}
-function num7() {subtotal = subtotal + 7; document.getElementById("pantalla").innerHTML = subtotal;}
-function num8() {subtotal = subtotal + 8; document.getElementById("pantalla").innerHTML = subtotal;}
-function num9() {subtotal = subtotal + 9; document.getElementById("pantalla").innerHTML = subtotal;}
+//Listener per botons de la pantalla -> Si es fa per tota la 'window' reacciona quan cliques a qualsevol lloc
+var botons = document.getElementsByClassName("btn");
+for (let i = 0; i < botons.length; i++) {
+    botons[i].addEventListener('click', Boton, false);
+}
+function Boton(e) {
+    Calc(e.target.value);
+}
 
-// Operadors
-function suma() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "+"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
-function rest() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "-"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
-function mult() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "*"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
-function divi() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "/"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
-function mod() {if (subtotal == "") {primerNum = 0;} else {primerNum = parseFloat(subtotal)}; operador = "%"; subtotal=""; document.getElementById("pantalla").innerHTML = primerNum+operador;}
+//Listener per tecles del teclat
+window.addEventListener("keydown", Tecla, false); 
+function Tecla(e) {
+    if (ComprovaTecla(e.key)) {
+    Calc(e.key);
+    }
+}
 
-// Especials
-function coma() {if (subtotal.indexOf(".") == -1) {subtotal = subtotal + "."}; document.getElementById("pantalla").innerHTML = subtotal;}
-function inici() {subtotal = ""; primerNum=""; segonNum=""; document.getElementById("pantalla").innerHTML = "0";}
-function desf() {subtotal = subtotal.substring(0,subtotal.length-1); document.getElementById("pantalla").innerHTML = subtotal;}
-function nega() {if (subtotal.charAt(0) == "-") {subtotal = subtotal.substring(1,subtotal.lenght)} else {subtotal = "-"+subtotal}; document.getElementById("pantalla").innerHTML = subtotal;}
+//Cribatge de tecles sense relació
+function ComprovaTecla(tecla) {
+    let teclabona = false;
+    if (tecla == "+" ||
+        tecla == "-" ||
+        tecla == "x" || tecla == "*" ||
+        tecla == "÷" || tecla == "/" ||
+        tecla == "%" ||
+        tecla == "=" || tecla == "Enter" ||
+        tecla == "." ||
+        tecla == "C" ||
+        tecla == "Backspace" ||
+        !isNaN(parseFloat(tecla))) {
+        teclabona = true;
+    } else {
+        alert("Tecla incompatible: "+tecla);
+    }
+    return teclabona;
+}
 
-// Càlculs
-function igual() {
-    let resultat;
-    if (primerNum !== "" && subtotal !== "") { 
-        segonNum = parseFloat(subtotal);
-        switch(operador){
+// Funció principal dels botons
+function Calc(valor) {
+    pantalla = document.getElementById("pantalla").textContent;
+    if (pantalla === undefined) {pantalla = "";}
+    if (!isNaN(parseFloat(valor)) ||
+        (valor == "." && ((pantalla.indexOf(".")==-1) || (pantalla.lastIndexOf(".")<pantalla.indexOf(operador))))) {
+        pantalla = pantalla + valor;
+    } else {
+        switch(valor){
             case "+":
-                resultat = primerNum+segonNum;
-                break;
             case "-":
-                resultat = primerNum-segonNum;
-                break;
+            case "x":
             case "*":
-                resultat = primerNum*segonNum;
-                break;
+            case "÷":
             case "/":
-                if (segonNum == 0) {resultat = "Math.error(divBy0)";}
-                else {resultat = primerNum/segonNum;}
-                break;
             case "%":
-                resultat = primerNum%segonNum;
+                if (operador == "") {
+                    primerNum = parseFloat(pantalla);
+                    operador = valor;
+                    pantalla = pantalla + valor;
+                }
+                break;
+            case "±":
+                if (pantalla.charAt(0) == "-") {pantalla = pantalla.substring(1, pantalla.length);}
+                else {pantalla = "-"+pantalla;}
+                break;
+            case "C":
+                primerNum = "";
+                segonNum = "";
+                operador = "";
+                pantalla = "";
+                break;
+            case "CE":
+            case "Backspace":
+                pantalla = pantalla.substring(0,pantalla.length-1);
+                break;
+            case ".":
+                break;
+            case "=":
+            case "Enter":
+                if (operador != "") {
+                    index = pantalla.indexOf(operador,1);
+                    segonNum = parseFloat(pantalla.substring(index+1, pantalla.length));
+                    pantalla = igual(primerNum, operador, segonNum);
+                    primerNum = "";
+                    segonNum = "";
+                    operador = "";
+                }
                 break;
             default:
-                resultat="Math.error(UnknownOp"+operador+")";
+                alert ("Hi ha hagut un problema amb l'ordre '"+valor+"'");
+                pantalla = "";
         }
-        document.getElementById("pantalla").innerHTML = resultat;
-        console.log(primerNum+operador+segonNum+"="+resultat);
-        primerNum=""; segonNum=""; subtotal=""+resultat;
     }
+    document.getElementById("pantalla").innerHTML = pantalla;
+}
+
+// Càlcul en prémer igual o enter 
+function igual(primerNum, operador, segonNum) {
+    let resultat;
+    switch(operador){
+        case "+":
+            resultat = primerNum+segonNum;
+            break;
+        case "-":
+            resultat = primerNum-segonNum;
+            break;
+        case "x":
+        case "*":
+            resultat = primerNum*segonNum;
+            break;
+        case "÷":
+        case "/":
+            if (segonNum == 0) {alert("No es pot dividir per 0"); resultat = "";}
+            else {resultat = primerNum/segonNum;}
+            break;
+        case "%":
+            resultat = primerNum%segonNum;
+            break;
+        default:
+            resultat="Math.error(UnknownOp"+operador+")";
+    }
+    console.log(primerNum +" "+ operador +" "+ segonNum + " = " + resultat);
+    return resultat;
 }
